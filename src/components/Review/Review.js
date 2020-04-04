@@ -19,7 +19,6 @@ const Review = () => {
     useEffect(() => {
         const savedCart = getDatabaseCart();
         const productKeys = Object.keys(savedCart);
-        console.log(productKeys);
         fetch('http://localhost:2500/get-product-by-key',{
             method: 'POST',
             body: JSON.stringify(productKeys),
@@ -29,7 +28,6 @@ const Review = () => {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data);
             const cartProducts = productKeys.map(key => {
                 const product = data.find(product => product.key === key);
                 product.quantity = savedCart[key];
