@@ -1,25 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import './Shop.css';
-import fakeData from '../../fakeData'
 import Product from '../Product/Product';
 import Cart from '../Cart/Cart';
 import { addToDatabaseCart, getDatabaseCart } from '../../utilities/databaseManager';
 import { Link } from 'react-router-dom';
 
 const Shop = () => {
-    const first10 = fakeData.slice(0,10);
-    const [products,setProducts] = useState(first10);
+    const [products,setProducts] = useState([]);
     const [cart,setCart] = useState([]);
+
+    useEffect(() =>{
+        fetch('http://localhost:2500/products')
+        .then(res => res.json())
+        .then(data => {
+            setProducts(data);
+        })
+    },[]);
 
     useEffect(()=> {
         const savedCart = getDatabaseCart();
         const productKeys = Object.keys(savedCart);
-        const previousCart = productKeys.map(key => {
-            const product = fakeData.find(product => product.key === key);
-            product.quantity = savedCart[key];
-            return product;
-        })
-        setCart(previousCart);
+        if (products.length > 0) {
+            const previousCart = productKeys.map(key => {
+                const product = products.find(product => product.key === key);
+                product.quantity = savedCart[key];
+                return product;
+            })
+            setCart(previousCart);
+        }
     },[])
 
     const handleAddProduct = (product) => {

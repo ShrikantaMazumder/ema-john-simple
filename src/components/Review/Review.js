@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './Review.css';
 import { getDatabaseCart, removeFromDatabaseCart, processOrder } from '../../utilities/databaseManager';
-import fakeData from '../../fakeData';
 import Cart from '../Cart/Cart';
 import ReviewItem from '../ReviewItem/ReviewItem';
-import happyImage from '../../images/giphy.gif';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../Login/useAuth';
 
 const Review = () => {
     const [cart,setCart] = useState([]);
-    const [orderPlaced,setOrderPlaced] = useState(false);
     const auth = useAuth();
 
     const handleRemoveItem = (productKey) => {
@@ -19,31 +16,29 @@ const Review = () => {
         removeFromDatabaseCart(productKey);
     }
 
-    
-
-    //Handle place order
-    const handlePlaceOrder = () => {
-        setCart([]);
-        setOrderPlaced(true);
-        processOrder();
-    }
-
     useEffect(() => {
         const savedCart = getDatabaseCart();
         const productKeys = Object.keys(savedCart);
-        const cartProducts = productKeys.map(key => {
-            const product = fakeData.find(product => product.key === key);
-            product.quantity = savedCart[key];
-            return product;
+        console.log(productKeys);
+        fetch('http://localhost:2500/get-product-by-key',{
+            method: 'POST',
+            body: JSON.stringify(productKeys),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+                }
         })
-        setCart(cartProducts);
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+            const cartProducts = productKeys.map(key => {
+                const product = data.find(product => product.key === key);
+                product.quantity = savedCart[key];
+                return product;
+            })
+            setCart(cartProducts);
+        })
+        
     },[]);
-
-    let thankYou;
-
-    if (orderPlaced) {
-        thankYou = <img src={happyImage} alt=""/> ;
-    }
     return (
         <div className="shop-container">
             <div className="product-container">
@@ -54,9 +49,7 @@ const Review = () => {
                                             product={product}>
                                         </ReviewItem>)
                 }
-                {
-                    thankYou
-                }
+                
                 {
                     !cart.length && <h3>Nothing found in review</h3>
                 }
