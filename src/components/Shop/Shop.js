@@ -10,7 +10,7 @@ const Shop = () => {
     const [cart,setCart] = useState([]);
 
     useEffect(() =>{
-        fetch('http://localhost:2500/products')
+        fetch('https://fierce-lowlands-66823.herokuapp.com/products')
         .then(res => res.json())
         .then(data => {
             setProducts(data);

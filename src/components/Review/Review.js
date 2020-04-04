@@ -19,7 +19,7 @@ const Review = () => {
     useEffect(() => {
         const savedCart = getDatabaseCart();
         const productKeys = Object.keys(savedCart);
-        fetch('http://localhost:2500/get-product-by-key',{
+        fetch('https://fierce-lowlands-66823.herokuapp.com/get-product-by-key',{
             method: 'POST',
             body: JSON.stringify(productKeys),
             headers: {

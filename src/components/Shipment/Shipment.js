@@ -32,7 +32,7 @@ const Shipment = () => {
       shipment: shipInfo,
       payment:payment,
       }
-    fetch('http://localhost:2500/place-order',{
+    fetch('https://fierce-lowlands-66823.herokuapp.com/place-order',{
       method: "POST",
       body: JSON.stringify(orderDetail),
       headers: {
