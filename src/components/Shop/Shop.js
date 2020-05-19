@@ -20,6 +20,7 @@ const Shop = () => {
     useEffect(()=> {
         const savedCart = getDatabaseCart();
         const productKeys = Object.keys(savedCart);
+        
         if (products.length > 0) {
             const previousCart = productKeys.map(key => {
                 const product = products.find(product => product.key === key);
